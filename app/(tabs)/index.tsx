@@ -1,16 +1,23 @@
 import { ThemedText } from "@/components/ThemedText";
+import { Link } from "expo-router";
 import { View } from "react-native";
+import { Button, Text, useTheme } from "react-native-paper";
 
 export default function Index() {
+  const theme = useTheme();
+
   return (
     <View
       style={{
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
+        gap: 32,
+        backgroundColor: theme.colors.background,
       }}
     >
-      <ThemedText type="title">title.</ThemedText>
+      <Text variant="titleLarge" style={{fontSize: 72, fontWeight: 600}}>title.</Text>
+      <Button mode="contained"><Link href={{pathname: '/study'}}>Study</Link></Button>
     </View>
   );
 }
