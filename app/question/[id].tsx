@@ -2,7 +2,7 @@ import React from 'react';
 import { View } from 'react-native';
 import { Text, useTheme } from 'react-native-paper';
 
-function Search() {
+const Question = () => {
     const theme = useTheme();
 
     return (
@@ -11,18 +11,12 @@ function Search() {
                 flex: 1,
                 justifyContent: 'center',
                 alignItems: 'center',
-                gap: 32,
                 backgroundColor: theme.colors.background,
             }}
         >
-            <Text
-                variant='titleLarge'
-                style={{ fontSize: 72, fontWeight: 600 }}
-            >
-                Search Questions
-            </Text>
+            <Text>Question</Text>
         </View>
     );
-}
+};
 
-export default Search;
+export default Question;
