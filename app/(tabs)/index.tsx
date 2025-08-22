@@ -18,7 +18,7 @@ export default function Index() {
         >
             <Text
                 variant='titleLarge'
-                style={{ fontSize: 72, fontWeight: 600 }}
+                style={{ fontSize: 72, fontWeight: 600, padding: 16 }}
             >
                 title.
             </Text>

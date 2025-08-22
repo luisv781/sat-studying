@@ -1,10 +1,12 @@
-import { getQuestion, getQuestions } from '@/services/api';
+import { getQuestions } from '@/services/api';
+import { useRouter } from 'expo-router';
 import React from 'react';
 import { View } from 'react-native';
 import { Button, Text, useTheme } from 'react-native-paper';
 
 const Study = () => {
     const theme = useTheme();
+    const router = useRouter();
 
     return (
         <View
@@ -40,10 +42,9 @@ const Study = () => {
                                 console.warn('No questions available');
                             }
                         })
-                        .then((questionId) => {
-                            return getQuestion(questionId);
-                        })
-                        .then((question) => console.log(question))
+                        .then((questionId) =>
+                            router.push(`/question/${questionId}`)
+                        )
                 }
             >
                 Get Random Question
