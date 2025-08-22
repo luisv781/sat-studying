@@ -36,18 +36,18 @@ const Study = () => {
                                             Math.random() * questions.length
                                         )
                                     ];
-                                console.log('Random Question:', randomQuestion);
                                 return randomQuestion.external_id;
                             } else {
                                 console.warn('No questions available');
                             }
                         })
-                        .then((questionId) =>
-                            router.push(`/question/${questionId}`)
-                        )
+                        .then((questionId) => {
+                            if (questionId)
+                                router.push(`/question/${questionId}`);
+                        })
                 }
             >
-                Get Random Question
+                Try Random Question
             </Button>
         </View>
     );
