@@ -3,7 +3,7 @@ const GET_QUESTIONS_URL =
 const GET_QUESTION_URL =
     'https://qbank-api.collegeboard.org/msreportingquestionbank-prod/questionbank/digital/get-question';
 
-export const getQuestions = async () => {
+export const getQuestions = async (domain: string) => {
     const GET_QUESTIONS_OPTIONS = {
         method: 'POST',
         headers: {
@@ -12,7 +12,7 @@ export const getQuestions = async () => {
         body: JSON.stringify({
             asmtEventId: 99,
             test: 2,
-            domain: 'H,P,Q,S',
+            domain: domain,
         }),
     };
 
@@ -44,7 +44,8 @@ export const getQuestion = async (questionId: string) => {
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
-        return await response.json();
+        const questionData: QuestionData = await response.json();
+        return questionData;
     } catch (error) {
         console.error(`Error fetching questions: ${error}`);
         throw error;
