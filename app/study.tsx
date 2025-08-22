@@ -27,7 +27,7 @@ const Study = () => {
                 mode='contained'
                 icon={'book'}
                 onPress={() =>
-                    getQuestions()
+                    getQuestions('H,P,Q,S')
                         .then((questions) => {
                             if (questions.length > 0) {
                                 const randomQuestion =

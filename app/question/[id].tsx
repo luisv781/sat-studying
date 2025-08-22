@@ -1,36 +1,44 @@
+import useFetch from '@/hooks/useFetch';
 import { getQuestion } from '@/services/api';
 import { useLocalSearchParams } from 'expo-router';
 import React from 'react';
-import { View } from 'react-native';
-import { Text, useTheme } from 'react-native-paper';
-
-interface QuestionData {
-    stem: string;
-    rationale: string;
-    correct_answer: string[];
-}
+import { ScrollView, View } from 'react-native';
+import { ActivityIndicator, Text, useTheme } from 'react-native-paper';
 
 const Question = () => {
     const theme = useTheme();
     const { id } = useLocalSearchParams();
-    
-    let questionData : QuestionData | null;
-    getQuestion(id as string).then((data) => {
-        questionData = data;
-        console.log(data);
-    })
+
+    const {
+        data: questionData,
+        loading: questionLoading,
+        error: fetchError,
+    } = useFetch<QuestionData>(() => getQuestion(id as string));
 
     return (
         <View
             style={{
-                flex: 1,
-                justifyContent: 'center',
-                alignItems: 'center',
                 backgroundColor: theme.colors.background,
             }}
+            className='flex-1 justify-center items-center gap-6'
         >
-            <Text>Question:</Text>
-            <Text>{questionData ? questionData.stem : ""}</Text>
+            <Text className='text-4xl'>Question:</Text>
+
+            {fetchError ? (
+                <Text>error</Text>
+            ) : questionLoading ? (
+                <ActivityIndicator size={'large'} />
+            ) : (
+                <ScrollView>
+                    <Text className='text-xl'>
+                        Question Title: {questionData?.stem}
+                    </Text>
+                    <Text className='text-xl'>
+                        Correct Answer: questionData.correct_answer
+                    </Text>
+                    <Text className='text-xl'>questionData.rationale</Text>
+                </ScrollView>
+            )}
         </View>
     );
 };

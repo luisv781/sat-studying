@@ -10,9 +10,9 @@ const useFetch = <T>(fetchFunction: () => Promise<T>) => {
             setLoading(true);
             setError(null);
 
-            fetchFunction().then(result => {
+            fetchFunction().then((result) => {
                 setData(result);
-            })
+            });
         } catch (error) {
             setError(
                 error instanceof Error
