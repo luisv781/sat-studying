@@ -2,8 +2,9 @@ import useFetch from '@/hooks/useFetch';
 import { getQuestion } from '@/services/api';
 import { useLocalSearchParams } from 'expo-router';
 import React from 'react';
-import { Platform, ScrollView, View, Text } from 'react-native';
+import { Platform, ScrollView, Text, View } from 'react-native';
 import { ActivityIndicator, useTheme } from 'react-native-paper';
+import RenderHTML from 'react-native-render-html';
 import { WebView } from 'react-native-webview';
 
 const Question = () => {
@@ -16,6 +17,25 @@ const Question = () => {
         error: fetchError,
     } = useFetch<QuestionData>(() => getQuestion(id as string));
 
+    const questionStem = questionData?.stem
+        ? questionData?.stem
+        : '<p>Error loading question stem.</p>';
+    const questionRationale = questionData?.rationale
+        ? questionData?.rationale
+        : '<p>Error loading answer rationale.</p>';
+
+    const html = `
+    <html>
+      <head>
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      </head>
+      <body>
+        ${questionStem}
+      </body>
+    </html>
+  `;
+    console.log(html);
+
     return (
         <View
             style={{
@@ -23,30 +43,44 @@ const Question = () => {
             }}
             className='flex-1 justify-center items-center gap-6'
         >
-            <Text className='pt-12 text-4xl font-medium text-white'>Random Question</Text>
+            <Text className='pt-12 text-4xl font-medium text-white'>
+                Random Question
+            </Text>
 
             {fetchError ? (
                 <Text className='text-red-500'>{fetchError.message}</Text>
             ) : questionLoading ? (
-                <ActivityIndicator size={72} className='p-16' />
+                <ActivityIndicator
+                    size={72}
+                    className='h-full w-full flex-1 justify-center items-center'
+                />
             ) : (
-                <ScrollView className='w-full px-48'>
+                <ScrollView
+                    className={`w-full ${
+                        Platform.OS === 'web' ? 'px-48' : 'px-12'
+                    }`}
+                >
                     <View className='flex flex-col py-8 gap-4'>
                         <Text className='text-2xl text-white'>Question:</Text>
 
                         {Platform.OS === 'web' ? (
                             <iframe
-                                className='bg-white rounded-lg h-24'
-                                srcDoc={questionData?.stem}
+                                className='bg-white rounded-lg h-fit'
+                                srcDoc={questionStem}
                             ></iframe>
                         ) : (
+                            /*
                             <WebView
                                 originWhitelist={['*']}
                                 source={{
-                                    html: questionData?.stem
-                                        ? questionData?.stem
-                                        : '',
+                                    html: html,
                                 }}
+                                className='h-24 bg-white rounded-lg w-full py-12'
+                            />
+                            */
+                            <RenderHTML
+                                source={{ html: html }}
+                                
                             />
                         )}
                     </View>
@@ -60,21 +94,31 @@ const Question = () => {
                         {Platform.OS === 'web' ? (
                             <iframe
                                 className='bg-white rounded-lg h-72'
-                                srcDoc={questionData?.rationale}
+                                srcDoc={questionRationale}
                             ></iframe>
                         ) : (
                             <WebView
                                 originWhitelist={['*']}
                                 source={{
-                                    html: questionData?.rationale
-                                        ? questionData?.rationale
-                                        : '',
+                                    html: questionRationale,
                                 }}
                             />
                         )}
                     </View>
                 </ScrollView>
             )}
+            <WebView
+                originWhitelist={['*']}
+                source={{
+                    html: html,
+                }}
+                className='flex-1 h-24 bg-white rounded-lg w-full py-12'
+                style={{
+                    backgroundColor: theme.colors.background,
+                    height: 200,
+                    flex: 1,
+                }}
+            />
         </View>
     );
 };
