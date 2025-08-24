@@ -2,7 +2,7 @@ import { useRouter } from 'expo-router';
 import { View } from 'react-native';
 import { Button, Text, useTheme } from 'react-native-paper';
 
-export default function Index() {
+const Index = () => {
     const theme = useTheme();
     const router = useRouter();
 
@@ -32,3 +32,5 @@ export default function Index() {
         </View>
     );
 }
+
+export default Index;
