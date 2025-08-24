@@ -4,7 +4,6 @@ import { useLocalSearchParams } from 'expo-router';
 import React from 'react';
 import { Platform, ScrollView, Text, View } from 'react-native';
 import { ActivityIndicator, useTheme } from 'react-native-paper';
-import RenderHTML from 'react-native-render-html';
 import { WebView } from 'react-native-webview';
 
 const Question = () => {
@@ -69,18 +68,12 @@ const Question = () => {
                                 srcDoc={questionStem}
                             ></iframe>
                         ) : (
-                            /*
                             <WebView
                                 originWhitelist={['*']}
                                 source={{
                                     html: html,
                                 }}
                                 className='h-24 bg-white rounded-lg w-full py-12'
-                            />
-                            */
-                            <RenderHTML
-                                source={{ html: html }}
-                                
                             />
                         )}
                     </View>
@@ -107,18 +100,6 @@ const Question = () => {
                     </View>
                 </ScrollView>
             )}
-            <WebView
-                originWhitelist={['*']}
-                source={{
-                    html: html,
-                }}
-                className='flex-1 h-24 bg-white rounded-lg w-full py-12'
-                style={{
-                    backgroundColor: theme.colors.background,
-                    height: 200,
-                    flex: 1,
-                }}
-            />
         </View>
     );
 };
