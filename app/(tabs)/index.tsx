@@ -18,9 +18,9 @@ const Index = () => {
         >
             <Text
                 variant='titleLarge'
-                style={{ fontSize: 72, fontWeight: 600, padding: 16 }}
+                style={{ fontSize: 72, fontWeight: 600, padding: 16, textAlign: 'center', lineHeight: 70 }}
             >
-                title.
+                SAT Study App
             </Text>
             <Button
                 mode='contained'

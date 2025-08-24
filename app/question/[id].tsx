@@ -25,23 +25,30 @@ const Question = () => {
         ? questionData?.rationale
         : '<p>Error loading answer rationale.</p>';
 
-    const htmlStyle = `<style>
+    const htmlStyle = `
+        <style>
             body {
+                margin: 0;
+                padding: 0.8em;
                 font-family: Arial, sans-serif;
                 font-size: 3em;
                 color: #000;
-                padding: 20px;
             }
         </style>`;
-    const html = `
-    <html>
+    const heightSetter = `
+        function updateHeight() {
+            const height = document.body.offsetHeight;
+            window.ReactNativeWebView.postMessage(String(height * 0.4));
+        }
+        window.addEventListener("load", updateHeight);
+        setTimeout(updateHeight, 300);`;
 
     const questionHtml = `<html>
       <head>
         <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
         ${htmlStyle}
-      </head>
-      <body>
+        </head>
+        <body>
         ${questionStem}
       </body>
     </html>`;
@@ -55,6 +62,8 @@ const Question = () => {
       </body>
     </html>`;
 
+    const [questionViewHeight, setQuestionViewHeight] = useState(120);
+    const [rationaleViewHeight, setRationaleViewHeight] = useState(360);
 
     return (
         <View
@@ -89,15 +98,37 @@ const Question = () => {
                                 srcDoc={questionStem}
                             ></iframe>
                         ) : (
-                            <View className='bg-white rounded-xl w-full' style={{ height: questionViewHeight || 20 }}>
-                            <WebView
-                                originWhitelist={['*']}
-                                source={{
+                            <View
+                                className='bg-white rounded-xl w-full'
+                                style={{ height: questionViewHeight }}
+                            >
+                                <WebView
+                                    originWhitelist={['*']}
+                                    source={{
                                         html: questionHtml,
-                                }}
+                                    }}
                                     style={{
                                         flex: 1,
                                         backgroundColor: 'transparent',
+                                    }}
+                                    scrollEnabled={false}
+                                    onMessage={(event) => {
+                                        console.log(
+                                            'onMessage',
+                                            event.nativeEvent.data
+                                        );
+                                        const newHeight = Number(
+                                            event.nativeEvent.data
+                                        );
+                                        if (
+                                            !isNaN(newHeight) &&
+                                            newHeight !== questionViewHeight
+                                        ) {
+                                            setQuestionViewHeight(newHeight);
+                                        }
+                                    }}
+                                    injectedJavaScript={heightSetter}
+                                    onError={(error) => console.error(error)}
                                 />
                             </View>
                         )}
@@ -112,20 +143,40 @@ const Question = () => {
                         {Platform.OS === 'web' ? (
                             <iframe
                                 className='bg-white rounded-lg h-72'
-                                srcDoc={questionRationale}
+                                srcDoc={rationaleHtml}
                             ></iframe>
                         ) : (
-                            <View className='bg-white rounded-xl w-full h-72'>
-                            <WebView
-                                originWhitelist={['*']}
-                                source={{
+                            <View
+                                className='bg-white rounded-xl w-full h-72'
+                                style={{ height: rationaleViewHeight }}
+                            >
+                                <WebView
+                                    originWhitelist={['*']}
+                                    source={{
                                         html: rationaleHtml,
                                     }}
                                     style={{
                                         flex: 1,
                                         backgroundColor: 'transparent',
-                                }}
-                            />
+                                    }}
+                                    scrollEnabled={false}
+                                    onMessage={(event) => {
+                                        console.log(
+                                            'Rationale height:',
+                                            event.nativeEvent.data
+                                        );
+                                        const newHeight = Number(
+                                            event.nativeEvent.data
+                                        );
+                                        if (
+                                            !isNaN(newHeight) &&
+                                            newHeight !== rationaleViewHeight
+                                        ) {
+                                            setRationaleViewHeight(newHeight);
+                                        }
+                                    }}
+                                    injectedJavaScript={heightSetter}
+                                />
                             </View>
                         )}
                     </View>

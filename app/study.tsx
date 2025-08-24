@@ -14,12 +14,13 @@ const Study = () => {
                 flex: 1,
                 justifyContent: 'center',
                 alignItems: 'center',
+                gap: 32,
                 backgroundColor: theme.colors.background,
             }}
         >
             <Text
                 variant='titleLarge'
-                style={{ fontSize: 72, fontWeight: 600 }}
+                style={{ fontSize: 72, fontWeight: 600, padding: 16 }}
             >
                 Study
             </Text>
