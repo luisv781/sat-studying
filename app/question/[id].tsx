@@ -113,10 +113,6 @@ const Question = () => {
                                     }}
                                     scrollEnabled={false}
                                     onMessage={(event) => {
-                                        console.log(
-                                            'onMessage',
-                                            event.nativeEvent.data
-                                        );
                                         const newHeight = Number(
                                             event.nativeEvent.data
                                         );
@@ -128,7 +124,6 @@ const Question = () => {
                                         }
                                     }}
                                     injectedJavaScript={heightSetter}
-                                    onError={(error) => console.error(error)}
                                 />
                             </View>
                         )}
@@ -161,10 +156,6 @@ const Question = () => {
                                     }}
                                     scrollEnabled={false}
                                     onMessage={(event) => {
-                                        console.log(
-                                            'Rationale height:',
-                                            event.nativeEvent.data
-                                        );
                                         const newHeight = Number(
                                             event.nativeEvent.data
                                         );
