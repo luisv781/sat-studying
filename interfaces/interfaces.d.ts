@@ -2,7 +2,13 @@ interface QuestionData {
     stem: string;
     stimulus?: string; // Only on reading questions
     rationale: string;
+    answerOptions?: answerOption[];
     correct_answer: string[];
+}
+
+type answerOption = {
+    id: string;
+    content: string;
 }
 
 /**
