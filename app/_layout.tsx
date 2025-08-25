@@ -1,6 +1,7 @@
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import { PaperProvider } from 'react-native-paper';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import './globals.css';
 
 export default function RootLayout() {
@@ -9,15 +10,17 @@ export default function RootLayout() {
     });
 
     return (
-        <PaperProvider>
-            <Stack>
-                <Stack.Screen name='(tabs)' options={{ headerShown: false }} />
-                <Stack.Screen name='study' options={{ headerShown: false }} />
-                <Stack.Screen
-                    name='question/[id]'
-                    options={{ headerShown: false }}
-                />
-            </Stack>
-        </PaperProvider>
+        <SafeAreaProvider>
+            <PaperProvider>
+                <Stack>
+                    <Stack.Screen name='(tabs)' options={{ headerShown: false }} />
+                    <Stack.Screen name='study' options={{ headerShown: false }} />
+                    <Stack.Screen
+                        name='question/[id]'
+                        options={{ headerShown: false }}
+                    />
+                </Stack>
+            </PaperProvider>
+        </SafeAreaProvider>
     );
 }
