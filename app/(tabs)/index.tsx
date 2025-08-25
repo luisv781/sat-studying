@@ -1,6 +1,6 @@
 import { useRouter } from 'expo-router';
-import { View } from 'react-native';
-import { Button, Text, useTheme } from 'react-native-paper';
+import { Text, View } from 'react-native';
+import { Button, useTheme } from 'react-native-paper';
 
 const Index = () => {
     const theme = useTheme();
@@ -17,8 +17,7 @@ const Index = () => {
             }}
         >
             <Text
-                variant='titleLarge'
-                style={{ fontSize: 72, fontWeight: 600, padding: 16, textAlign: 'center', lineHeight: 70 }}
+                className='p-2 text-8xl font-extrabold text-white text-center leading-[70px]'
             >
                 SAT Study App
             </Text>

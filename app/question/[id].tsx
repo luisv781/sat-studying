@@ -37,8 +37,8 @@ const Question = () => {
         </style>`;
     const heightSetter = `
         function updateHeight() {
-            const height = document.body.offsetHeight;
-            window.ReactNativeWebView.postMessage(String(height * 0.4));
+            const height = document.body.scrollHeight;
+            window.ReactNativeWebView.postMessage(String(height / 3));
         }
         window.addEventListener("load", updateHeight);
         setTimeout(updateHeight, 300);`;
