@@ -21,7 +21,9 @@ export const getQuestions = async (domain: string) => {
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
-        return await response.json();
+
+        const questionList: QuestionList = await response.json();
+        return questionList;
     } catch (error) {
         console.error(`Error fetching questions: ${error}`);
         throw error;
@@ -44,6 +46,7 @@ export const getQuestion = async (questionId: string) => {
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
+
         const questionData: QuestionData = await response.json();
         return questionData;
     } catch (error) {

@@ -29,4 +29,4 @@ interface QuestionDescription {
     score_band_range_cd: number; // Difficulty level
 }
 
-type QuestionsList = QuestionDescription[];
+type QuestionList = QuestionDescription[];
