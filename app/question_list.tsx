@@ -7,13 +7,8 @@ const QuestionList = () => {
 
     return (
         <View
-            style={{
-                flex: 1,
-                justifyContent: 'center',
-                alignItems: 'center',
-                gap: 32,
-                backgroundColor: theme.colors.background,
-            }}
+            style={{ backgroundColor: theme.colors.background }}
+            className='flex-1 justify-center items-center gap-8'
         >
             <Text>QuestionList</Text>
         </View>

@@ -5,8 +5,6 @@ import Index from '.';
 import Search from './search';
 
 export default function TabLayout() {
-    const theme = useTheme();
-
     const [index, setIndex] = useState(0);
     const [routes] = useState([
         { key: 'index', title: 'Home', focusedIcon: 'home', unfocusedIcon: 'home-outline'},

@@ -8,17 +8,10 @@ const Index = () => {
 
     return (
         <View
-            style={{
-                flex: 1,
-                justifyContent: 'center',
-                alignItems: 'center',
-                gap: 32,
-                backgroundColor: theme.colors.background,
-            }}
+            style={{ backgroundColor: theme.colors.background }}
+            className='flex-1 justify-center items-center gap-8'
         >
-            <Text
-                className='p-2 text-8xl font-extrabold text-white text-center leading-[70px]'
-            >
+            <Text className='p-2 text-8xl font-extrabold text-white text-center leading-[70px]'>
                 SAT Study App
             </Text>
             <Button
@@ -30,6 +23,6 @@ const Index = () => {
             </Button>
         </View>
     );
-}
+};
 
 export default Index;
