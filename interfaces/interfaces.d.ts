@@ -3,6 +3,7 @@ interface QuestionData {
     stimulus?: string; // Only on reading questions
     rationale: string;
     answerOptions?: answerOption[];
+    keys?: string[]; // ID of correct answer option
     correct_answer: string[];
 }
 
