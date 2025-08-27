@@ -1,4 +1,5 @@
-import { Pressable, Text, View } from 'react-native';
+import { Pressable, Text } from 'react-native';
+import parse from 'html-react-parser';
 
 type AnswerChoiceData = {
     item: answerOption;
@@ -8,18 +9,20 @@ type AnswerChoiceData = {
 };
 
 const AnswerChoice = ({ item, onPress, correct, active }: AnswerChoiceData) => {
+    let choiceText = parse(item.content)
+
     return (
         <Pressable
             onPress={onPress}
-            className={`w-full h-16 mx-16 my-4 ${
+            className={`w-full min-h-16 my-4 border-2 rounded-md ${
                 active
                     ? correct
-                        ? 'bg-lime-600'
-                        : 'bg-red-600'
-                    : 'bg-slate-700'
-            } border-slate-400 border-2 rounded-md`}
+                        ? 'bg-lime-700 border-lime-400'
+                        : 'bg-red-800 border-red-400'
+                    : 'bg-slate-700 border-slate-400'
+            }`}
         >
-            <Text className='text-center text-white'>{item.content}</Text>
+            <Text className='text-lg text-center text-white my-auto p-4'>{choiceText}</Text>
         </Pressable>
     );
 };
