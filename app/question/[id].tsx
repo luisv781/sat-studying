@@ -1,8 +1,9 @@
+import AnswerChoice from '@/components/AnswerChoice';
 import useFetch from '@/hooks/useFetch';
 import { getQuestion } from '@/services/api';
 import { useLocalSearchParams } from 'expo-router';
 import React, { useState } from 'react';
-import { Platform, ScrollView, Text, View } from 'react-native';
+import { FlatList, Platform, ScrollView, Text, View } from 'react-native';
 import { ActivityIndicator, useTheme } from 'react-native-paper';
 import { WebView, WebViewMessageEvent } from 'react-native-webview';
 
@@ -17,17 +18,18 @@ const Question = () => {
         error: fetchError,
     } = useFetch<QuestionData>(() => getQuestion(id as string));
 
-    // Getting the html content for question/rationale
+    // Getting the html content for question/rationale/stimulus (if any)
+    const questionStimulus = questionData?.stimulus
+        ? questionData?.stimulus
+        : '';
     const questionStem = questionData?.stem
         ? questionData?.stem
         : '<p>Error loading question stem.</p>';
     const questionRationale = questionData?.rationale
         ? questionData?.rationale
         : '<p>Error loading answer rationale.</p>';
-    const questionStimulus = questionData?.stimulus
-        ? questionData?.stimulus
-        : '';
 
+    // CSS that will be injected in webviews/iframes
     const htmlStyle = `
         <style>
             body {
@@ -38,6 +40,7 @@ const Question = () => {
                 color: #000;
             }
         </style>`;
+    // JS that will send the webview height in order to update it on the RN side
     const heightSetter = `
         function updateHeight() {
             const height = document.body.scrollHeight;
@@ -58,10 +61,9 @@ const Question = () => {
 
     const stimulusHtml = `<html>
       <head>
-        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
         ${htmlStyle}
-        </head>
-        <body>
+      </head>
+      <body>
         ${questionStimulus}
       </body>
     </html>`;
@@ -69,8 +71,8 @@ const Question = () => {
       <head>
         <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
         ${htmlStyle}
-        </head>
-        <body>
+      </head>
+      <body>
         ${questionStem}
       </body>
     </html>`;
@@ -78,15 +80,17 @@ const Question = () => {
       <head>
         <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
         ${htmlStyle}
-        </head>
-        <body>
+      </head>
+      <body>
         ${questionRationale}
       </body>
     </html>`;
 
     const [stimulusViewHeight, setStimulusViewHeight] = useState(360);
-    const [questionViewHeight, setQuestionViewHeight] = useState(120);
+    const [questionViewHeight, setQuestionViewHeight] = useState(100);
     const [rationaleViewHeight, setRationaleViewHeight] = useState(360);
+
+    const [answerSelected, setAnswerSelected] = useState(false);
 
     return (
         <View
@@ -112,7 +116,7 @@ const Question = () => {
                         <View className='flex flex-col py-6 gap-4'>
                             {Platform.OS === 'web' ? (
                                 <iframe
-                                    className='bg-white rounded-lg h-72'
+                                    className='bg-white rounded-lg h-48'
                                     srcDoc={stimulusHtml}
                                 ></iframe>
                             ) : (
@@ -147,7 +151,7 @@ const Question = () => {
 
                         {Platform.OS === 'web' ? (
                             <iframe
-                                className='bg-white rounded-lg h-fit'
+                                className='bg-white rounded-lg h-32'
                                 srcDoc={questionStem}
                             ></iframe>
                         ) : (
@@ -177,7 +181,31 @@ const Question = () => {
                         )}
                     </View>
 
-                    <View className='flex flex-col py-6 gap-4'>
+                    {questionData?.answerOptions && questionData.keys && (
+                        <View className='flex flex-col py-6 gap-4'>
+                            <FlatList
+                                data={questionData.answerOptions}
+                                keyExtractor={(item) => item.id}
+                                renderItem={({
+                                    item,
+                                }: {
+                                    item: answerOption;
+                                }) => {
+                                    return (
+                                        <AnswerChoice
+                                            item={item}
+                                            onPress={() => {setAnswerSelected(true)}}
+                                            correct={questionData?.keys ? item.id === questionData.keys[0]: false}
+                                            active={answerSelected}
+                                        />
+                                    );
+                                }}
+                                extraData={answerSelected}
+                            />
+                        </View>
+                    )}
+
+                    <View className={`${answerSelected ? 'flex' : 'hidden'} flex-col py-6 gap-4`}>
                         <Text className='text-2xl text-white'>
                             Correct Answer: {questionData?.correct_answer}
                         </Text>
