@@ -1,15 +1,16 @@
 import AnswerChoice from '@/components/AnswerChoice';
+import BackButton from '@/components/BackButton';
 import useFetch from '@/hooks/useFetch';
 import { getQuestion } from '@/services/api';
-import { useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { FlatList, Platform, ScrollView, Text, View } from 'react-native';
 import { ActivityIndicator, useTheme } from 'react-native-paper';
 import { WebView, WebViewMessageEvent } from 'react-native-webview';
 
 const Question = () => {
-    const theme = useTheme();
     const { id } = useLocalSearchParams();
+    const theme = useTheme();
 
     // Fetch Question Data
     const {
@@ -109,9 +110,10 @@ const Question = () => {
                         Platform.OS === 'web' ? 'px-48' : 'px-12'
                     }`}
                 >
-                    <Text className='py-12 text-4xl text-center font-medium text-white'>
+                    <Text className='py-12 text-4xl text-center font-semibold text-white'>
                         Random Question
                     </Text>
+
                     {questionData?.stimulus && (
                         <View className='flex flex-col py-6 gap-4'>
                             {Platform.OS === 'web' ? (
@@ -146,6 +148,7 @@ const Question = () => {
                             )}
                         </View>
                     )}
+
                     <View className='flex flex-col py-6 gap-4'>
                         <Text className='text-2xl text-white'>Question:</Text>
 
@@ -194,8 +197,15 @@ const Question = () => {
                                     return (
                                         <AnswerChoice
                                             item={item}
-                                            onPress={() => {setAnswerSelected(true)}}
-                                            correct={questionData?.keys ? item.id === questionData.keys[0]: false}
+                                            onPress={() => {
+                                                setAnswerSelected(true);
+                                            }}
+                                            correct={
+                                                questionData?.keys
+                                                    ? item.id ===
+                                                      questionData.keys[0]
+                                                    : false
+                                            }
                                             active={answerSelected}
                                         />
                                     );
@@ -205,7 +215,11 @@ const Question = () => {
                         </View>
                     )}
 
-                    <View className={`${answerSelected ? 'flex' : 'hidden'} flex-col py-6 gap-4`}>
+                    <View
+                        className={`${
+                            answerSelected ? 'flex' : 'hidden'
+                        } flex-col py-6 gap-4`}
+                    >
                         <Text className='text-2xl text-white'>
                             Correct Answer: {questionData?.correct_answer}
                         </Text>
@@ -244,6 +258,7 @@ const Question = () => {
                     </View>
                 </ScrollView>
             )}
+            <BackButton />
         </View>
     );
 };
