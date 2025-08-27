@@ -9,20 +9,22 @@ type AnswerChoiceData = {
 };
 
 const AnswerChoice = ({ item, onPress, correct, active }: AnswerChoiceData) => {
-    let choiceText = parse(item.content)
+    let choiceText = parse(item.content);
 
     return (
         <Pressable
             onPress={onPress}
-            className={`w-full min-h-16 my-4 border-2 rounded-md ${
+            className={`w-full min-h-16 my-4 border-2 rounded-xl transition-colors ${
                 active
                     ? correct
                         ? 'bg-lime-700 border-lime-400'
                         : 'bg-red-800 border-red-400'
-                    : 'bg-slate-700 border-slate-400'
+                    : 'bg-slate-700 border-slate-400 hover:bg-slate-600'
             }`}
         >
-            <Text className='text-lg text-center text-white my-auto p-4'>{choiceText}</Text>
+            <Text className='my-auto p-4 text-lg text-left text-white'>
+                {choiceText}
+            </Text>
         </Pressable>
     );
 };
