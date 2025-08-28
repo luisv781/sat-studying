@@ -6,7 +6,7 @@ import toStyledHtml, { checkHeight, heightSetter } from '@/utils/toStyledHtml';
 import { useLocalSearchParams } from 'expo-router';
 import React, { useState } from 'react';
 import { FlatList, Platform, ScrollView, Text, View } from 'react-native';
-import { ActivityIndicator, useTheme } from 'react-native-paper';
+import { ActivityIndicator, TextInput, useTheme } from 'react-native-paper';
 import { WebView } from 'react-native-webview';
 
 const Question = () => {
@@ -39,14 +39,17 @@ const Question = () => {
     const [questionViewHeight, setQuestionViewHeight] = useState(100);
     const [rationaleViewHeight, setRationaleViewHeight] = useState(360);
 
+    // MCQ
     const [answerSelected, setAnswerSelected] = useState(false);
-
+    // FRQ
+    const [responseText, setResponseText] = useState('');
+    
     return (
         <View
             style={{
                 backgroundColor: theme.colors.background,
             }}
-            className='flex-1 justify-center items-center gap-6 py-6'
+            className='flex-1 justify-center items-center gap-6'
         >
             {fetchError ? (
                 <Text className='text-red-500'>{fetchError.message}</Text>
@@ -54,7 +57,7 @@ const Question = () => {
                 <ActivityIndicator size={72} className='m-8' />
             ) : (
                 <ScrollView
-                    className={`w-full ${
+                    className={`w-full py-6 ${
                         Platform.OS === 'web' ? 'px-48' : 'px-12'
                     }`}
                 >
@@ -134,9 +137,9 @@ const Question = () => {
                         )}
                     </View>
 
-                    {questionData?.answerOptions && questionData.keys && (
+                    {questionData?.keys && (
                         <View className='flex flex-col py-6 gap-4'>
-                            <FlatList
+                            {(questionData?.type === 'mcq' && questionData?.answerOptions) ? <FlatList
                                 data={questionData.answerOptions}
                                 keyExtractor={(item) => item.id}
                                 scrollEnabled={false}
@@ -162,7 +165,13 @@ const Question = () => {
                                     );
                                 }}
                                 extraData={answerSelected}
+                            /> :
+                            <TextInput
+                                label={'Response'}
+                                value={responseText}
+                                onChangeText={setResponseText}
                             />
+                            }
                         </View>
                     )}
 
