@@ -13,8 +13,10 @@ export default function RootLayout() {
         <SafeAreaProvider>
             <PaperProvider>
                 <Stack>
-                    <Stack.Screen name='(tabs)' options={{ headerShown: false }} />
-                    <Stack.Screen name='study' options={{ headerShown: false }} />
+                    <Stack.Screen
+                        name='(tabs)'
+                        options={{ headerShown: false }}
+                    />
                     <Stack.Screen
                         name='question/[id]'
                         options={{ headerShown: false }}

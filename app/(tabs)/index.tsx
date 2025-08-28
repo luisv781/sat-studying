@@ -1,10 +1,8 @@
-import { useRouter } from 'expo-router';
 import { Text, View } from 'react-native';
 import { Button, useTheme } from 'react-native-paper';
 
-const Index = () => {
+const Index = (setIndex: (index: number) => void) => {
     const theme = useTheme();
-    const router = useRouter();
 
     return (
         <View
@@ -14,11 +12,7 @@ const Index = () => {
             <Text className='p-2 text-8xl font-extrabold text-white text-center leading-[70px]'>
                 SAT Study App
             </Text>
-            <Button
-                mode='contained'
-                icon={'book'}
-                onPress={() => router.push('/study')}
-            >
+            <Button mode='contained' icon={'book'} onPress={() => setIndex(1)}>
                 Study
             </Button>
         </View>

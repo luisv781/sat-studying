@@ -1,4 +1,3 @@
-import BackButton from '@/components/BackButton';
 import { getQuestions } from '@/services/api';
 import { useRouter } from 'expo-router';
 import React from 'react';
@@ -46,7 +45,6 @@ const Study = () => {
             >
                 Try Random Question
             </Button>
-            <BackButton />
         </View>
     );
 };
