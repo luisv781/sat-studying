@@ -6,7 +6,12 @@ import toStyledHtml, { checkHeight, heightSetter } from '@/utils/toStyledHtml';
 import { useLocalSearchParams } from 'expo-router';
 import React, { useState } from 'react';
 import { FlatList, Platform, ScrollView, Text, View } from 'react-native';
-import { ActivityIndicator, TextInput, useTheme } from 'react-native-paper';
+import {
+    ActivityIndicator,
+    Button,
+    TextInput,
+    useTheme,
+} from 'react-native-paper';
 import { WebView } from 'react-native-webview';
 
 const Question = () => {
@@ -43,7 +48,7 @@ const Question = () => {
     const [answerSelected, setAnswerSelected] = useState(false);
     // FRQ
     const [responseText, setResponseText] = useState('');
-    
+
     return (
         <View
             style={{
@@ -139,82 +144,113 @@ const Question = () => {
 
                     {questionData?.keys && (
                         <View className='flex flex-col py-6 gap-4'>
-                            {(questionData?.type === 'mcq' && questionData?.answerOptions) ? <FlatList
-                                data={questionData.answerOptions}
-                                keyExtractor={(item) => item.id}
-                                scrollEnabled={false}
-                                renderItem={({
-                                    item,
-                                }: {
-                                    item: answerOption;
-                                }) => {
-                                    return (
-                                        <AnswerChoice
-                                            item={item}
-                                            onPress={() => {
-                                                setAnswerSelected(true);
-                                            }}
-                                            correct={
-                                                questionData?.keys
-                                                    ? item.id ===
-                                                      questionData.keys[0]
-                                                    : false
-                                            }
-                                            active={answerSelected}
-                                        />
-                                    );
-                                }}
-                                extraData={answerSelected}
-                            /> :
-                            <TextInput
-                                label={'Response'}
-                                value={responseText}
-                                onChangeText={setResponseText}
-                            />
-                            }
+                            {questionData?.type === 'mcq' &&
+                            questionData?.answerOptions ? (
+                                <FlatList
+                                    data={questionData.answerOptions}
+                                    keyExtractor={(item) => item.id}
+                                    scrollEnabled={false}
+                                    renderItem={({
+                                        item,
+                                    }: {
+                                        item: answerOption;
+                                    }) => {
+                                        return (
+                                            <AnswerChoice
+                                                item={item}
+                                                onPress={() => {
+                                                    setAnswerSelected(true);
+                                                }}
+                                                correct={
+                                                    questionData?.keys
+                                                        ? item.id ===
+                                                          questionData.keys[0]
+                                                        : false
+                                                }
+                                                active={answerSelected}
+                                            />
+                                        );
+                                    }}
+                                    extraData={answerSelected}
+                                />
+                            ) : (
+                                <>
+                                    <TextInput
+                                        label={'Response'}
+                                        value={responseText}
+                                        onChangeText={setResponseText}
+                                        disabled={answerSelected}
+                                        error={
+                                            answerSelected &&
+                                            responseText !==
+                                                questionData.keys[0]
+                                        }
+                                        right={
+                                            answerSelected &&
+                                            responseText ===
+                                                questionData.keys[0] ? (
+                                                <TextInput.Icon icon='check' />
+                                            ) : null
+                                        }
+                                    />
+                                    <Button
+                                        mode='contained'
+                                        onPress={() => {
+                                            setAnswerSelected(true);
+                                        }}
+                                    >
+                                        Submit
+                                    </Button>
+                                </>
+                            )}
                         </View>
                     )}
 
-                    {answerSelected && <View
-                        className={'flex flex-col py-6 gap-4'}
-                    >
-                        <Text className='text-2xl text-white'>
-                            Correct Answer: <Text className='font-medium'>{questionData?.correct_answer}</Text>
-                        </Text>
-                        <Text className='text-2xl text-white'>Rationale:</Text>
+                    {answerSelected && (
+                        <View className={'flex flex-col py-6 gap-4'}>
+                            <Text className='text-2xl text-white'>
+                                Correct Answer:{' '}
+                                <Text className='font-medium'>
+                                    {questionData?.correct_answer}
+                                </Text>
+                            </Text>
+                            <Text className='text-2xl text-white'>
+                                Rationale:
+                            </Text>
 
-                        {Platform.OS === 'web' ? (
-                            <iframe
-                                className='bg-white rounded-lg h-72'
-                                srcDoc={rationaleHtml}
-                            ></iframe>
-                        ) : (
-                            <View
-                                className='bg-white rounded-xl w-full h-72'
-                                style={{ height: rationaleViewHeight }}
-                            >
-                                <WebView
-                                    originWhitelist={['*']}
-                                    source={{
-                                        html: rationaleHtml,
-                                    }}
-                                    style={{
-                                        flex: 1,
-                                        backgroundColor: 'transparent',
-                                    }}
-                                    scrollEnabled={false}
-                                    onMessage={(event) =>
-                                        checkHeight(
-                                            event,
-                                            setRationaleViewHeight,
-                                            rationaleViewHeight
-                                        )
-                                    }
-                                    injectedJavaScript={heightSetter}
-                                />
-                            </View>
-                        )}
-                    </View>}
+                            {Platform.OS === 'web' ? (
+                                <iframe
+                                    className='bg-white rounded-lg h-72'
+                                    srcDoc={rationaleHtml}
+                                ></iframe>
+                            ) : (
+                                <View
+                                    className='bg-white rounded-xl w-full h-72'
+                                    style={{ height: rationaleViewHeight }}
+                                >
+                                    <WebView
+                                        originWhitelist={['*']}
+                                        source={{
+                                            html: rationaleHtml,
+                                        }}
+                                        style={{
+                                            flex: 1,
+                                            backgroundColor: 'transparent',
+                                        }}
+                                        scrollEnabled={false}
+                                        onMessage={(event) =>
+                                            checkHeight(
+                                                event,
+                                                setRationaleViewHeight,
+                                                rationaleViewHeight
+                                            )
+                                        }
+                                        injectedJavaScript={heightSetter}
+                                    />
+                                </View>
+                            )}
+                        </View>
+                    )}
                 </ScrollView>
             )}
             <BackButton />
