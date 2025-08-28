@@ -2,11 +2,12 @@ import AnswerChoice from '@/components/AnswerChoice';
 import BackButton from '@/components/BackButton';
 import useFetch from '@/hooks/useFetch';
 import { getQuestion } from '@/services/api';
-import { useLocalSearchParams, useRouter } from 'expo-router';
+import toStyledHtml, { checkHeight, heightSetter } from '@/utils/toStyledHtml';
+import { useLocalSearchParams } from 'expo-router';
 import React, { useState } from 'react';
 import { FlatList, Platform, ScrollView, Text, View } from 'react-native';
 import { ActivityIndicator, useTheme } from 'react-native-paper';
-import { WebView, WebViewMessageEvent } from 'react-native-webview';
+import { WebView } from 'react-native-webview';
 
 const Question = () => {
     const { id } = useLocalSearchParams();
@@ -30,62 +31,9 @@ const Question = () => {
         ? questionData?.rationale
         : '<p>Error loading answer rationale.</p>';
 
-    // CSS that will be injected in webviews/iframes
-    const htmlStyle = `
-        <style>
-            body {
-                margin: 0;
-                padding: 0.8em;
-                font-family: Arial, sans-serif;
-                font-size: ${Platform.OS === 'web' ? '1em' : '3em'};
-                color: #000;
-            }
-        </style>`;
-    // JS that will send the webview height in order to update it on the RN side
-    const heightSetter = `
-        function updateHeight() {
-            const height = document.body.scrollHeight;
-            window.ReactNativeWebView.postMessage(String(height / 3));
-        }
-        window.addEventListener("load", updateHeight);
-        setTimeout(updateHeight, 300);`;
-
-    const checkHeight = (
-        event: WebViewMessageEvent,
-        setHeight: (newHeight: number) => void
-    ) => {
-        const newHeight = Number(event.nativeEvent.data);
-        if (!isNaN(newHeight) && newHeight !== questionViewHeight) {
-            setHeight(newHeight);
-        }
-    };
-
-    const stimulusHtml = `<html>
-      <head>
-        ${htmlStyle}
-      </head>
-      <body>
-        ${questionStimulus}
-      </body>
-    </html>`;
-    const questionHtml = `<html>
-      <head>
-        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-        ${htmlStyle}
-      </head>
-      <body>
-        ${questionStem}
-      </body>
-    </html>`;
-    const rationaleHtml = `<html>
-      <head>
-        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-        ${htmlStyle}
-      </head>
-      <body>
-        ${questionRationale}
-      </body>
-    </html>`;
+    const stimulusHtml = toStyledHtml(questionStimulus, false);
+    const questionHtml = toStyledHtml(questionStem);
+    const rationaleHtml = toStyledHtml(questionRationale);
 
     const [stimulusViewHeight, setStimulusViewHeight] = useState(360);
     const [questionViewHeight, setQuestionViewHeight] = useState(100);
@@ -98,7 +46,7 @@ const Question = () => {
             style={{
                 backgroundColor: theme.colors.background,
             }}
-            className='flex-1 justify-center items-center gap-6'
+            className='flex-1 justify-center items-center gap-6 py-6'
         >
             {fetchError ? (
                 <Text className='text-red-500'>{fetchError.message}</Text>
@@ -110,7 +58,7 @@ const Question = () => {
                         Platform.OS === 'web' ? 'px-48' : 'px-12'
                     }`}
                 >
-                    <Text className='py-12 text-4xl text-center font-semibold text-white'>
+                    <Text className='py-6 text-4xl text-center font-semibold text-white'>
                         Random Question
                     </Text>
 
@@ -139,7 +87,8 @@ const Question = () => {
                                         onMessage={(event) =>
                                             checkHeight(
                                                 event,
-                                                setStimulusViewHeight
+                                                setStimulusViewHeight,
+                                                stimulusViewHeight
                                             )
                                         }
                                         injectedJavaScript={heightSetter}
@@ -175,7 +124,8 @@ const Question = () => {
                                     onMessage={(event) =>
                                         checkHeight(
                                             event,
-                                            setQuestionViewHeight
+                                            setQuestionViewHeight,
+                                            questionViewHeight
                                         )
                                     }
                                     injectedJavaScript={heightSetter}
@@ -189,6 +139,7 @@ const Question = () => {
                             <FlatList
                                 data={questionData.answerOptions}
                                 keyExtractor={(item) => item.id}
+                                scrollEnabled={false}
                                 renderItem={({
                                     item,
                                 }: {
@@ -215,13 +166,11 @@ const Question = () => {
                         </View>
                     )}
 
-                    <View
-                        className={`${
-                            answerSelected ? 'flex' : 'hidden'
-                        } flex-col py-6 gap-4`}
+                    {answerSelected && <View
+                        className={'flex flex-col py-6 gap-4'}
                     >
                         <Text className='text-2xl text-white'>
-                            Correct Answer: {questionData?.correct_answer}
+                            Correct Answer: <Text className='font-medium'>{questionData?.correct_answer}</Text>
                         </Text>
                         <Text className='text-2xl text-white'>Rationale:</Text>
 
@@ -248,14 +197,15 @@ const Question = () => {
                                     onMessage={(event) =>
                                         checkHeight(
                                             event,
-                                            setRationaleViewHeight
+                                            setRationaleViewHeight,
+                                            rationaleViewHeight
                                         )
                                     }
                                     injectedJavaScript={heightSetter}
                                 />
                             </View>
                         )}
-                    </View>
+                    </View>}
                 </ScrollView>
             )}
             <BackButton />
