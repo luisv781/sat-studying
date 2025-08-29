@@ -4,7 +4,7 @@ import { getQuestions } from '@/services/api';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React from 'react';
 import { FlatList, Text, TouchableOpacity, View } from 'react-native';
-import { ActivityIndicator, useTheme } from 'react-native-paper';
+import { ActivityIndicator, Divider, useTheme } from 'react-native-paper';
 
 const QuestionSearch = () => {
     const { domain } = useLocalSearchParams();
@@ -27,21 +27,60 @@ const QuestionSearch = () => {
             ) : questionLoading ? (
                 <ActivityIndicator size={72} style={{ margin: 32 }} />
             ) : (
-                <View className='w-full'>
-                    <Text className='m-8 text-5xl text-center font-bold text-white'>Question Search</Text>
+                <View className='w-full h-full'>
                     <FlatList
                         data={questionData}
-                        scrollEnabled
+                        ListHeaderComponent={() => (
+                            <View>
+                                <Text className='m-8 text-5xl text-center font-bold text-white'>
+                                    Question Search
+                                </Text>
+                                <View className='flex-row justify-between px-6 py-2'>
+                                    <Text className='text-2xl font-medium text-white'>
+                                        ID
+                                    </Text>
+                                    <Text className='text-2xl font-medium text-white'>
+                                        Skill
+                                    </Text>
+                                    <Text className='text-2xl font-medium text-white'>
+                                        Domain
+                                    </Text>
+                                    <Text className='text-2xl font-medium text-white'>
+                                        Difficulty
+                                    </Text>
+                                </View>
+                                <Divider />
+                            </View>
+                        )}
+                        ItemSeparatorComponent={() => (
+                            <Divider horizontalInset />
+                        )}
                         renderItem={({
                             item,
                         }: {
                             item: QuestionDescription;
                         }) => {
                             return (
-                                <TouchableOpacity className='flex-row justify-between p-4' onPress={() => router.push(`/question/${item.external_id}`)}>
-                                    <Text className='text-xl text-white'>{item.questionId}</Text>
-                                    <Text className='text-xl text-white'>{item.skill_desc}</Text>
-                                    <Text className='text-xl text-white'>{item.primary_class_cd_desc}</Text>
+                                <TouchableOpacity
+                                    className='flex-row justify-between p-6'
+                                    onPress={() =>
+                                        router.push(
+                                            `/question/${item.external_id}`
+                                        )
+                                    }
+                                >
+                                    <Text className='text-xl text-white'>
+                                        {item.questionId}
+                                    </Text>
+                                    <Text className='text-xl text-white'>
+                                        {item.skill_desc}
+                                    </Text>
+                                    <Text className='text-xl text-white'>
+                                        {item.primary_class_cd_desc}
+                                    </Text>
+                                    <Text className='text-xl text-white'>
+                                        Difficulty: {item.score_band_range_cd}/7
+                                    </Text>
                                 </TouchableOpacity>
                             );
                         }}
