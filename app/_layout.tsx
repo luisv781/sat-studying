@@ -21,6 +21,10 @@ export default function RootLayout() {
                         name='question/[id]'
                         options={{ headerShown: false }}
                     />
+                    <Stack.Screen
+                        name='question_search/[domain]'
+                        options={{ headerShown: false }}
+                    />
                 </Stack>
             </PaperProvider>
         </SafeAreaProvider>

@@ -5,8 +5,8 @@ import { View, Text } from 'react-native';
 import { Button, Card, useTheme } from 'react-native-paper';
 
 const Study = () => {
-    const theme = useTheme();
     const router = useRouter();
+    const theme = useTheme();
 
     return (
         <View

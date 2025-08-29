@@ -1,4 +1,5 @@
 import Chip from '@/components/Chip';
+import { useRouter } from 'expo-router';
 import React from 'react';
 import { FlatList, ScrollView, Text, View } from 'react-native';
 import { Button, useTheme } from 'react-native-paper';
@@ -44,6 +45,7 @@ const QuestionDomains: QuestionDomain[] = [
 ];
 
 function Search() {
+    const router = useRouter();
     const theme = useTheme();
 
     return (
@@ -93,7 +95,7 @@ function Search() {
                     marginHorizontal: 'auto',
                     marginVertical: 16,
                 }}
-                onPress={() => {}}
+                onPress={() => {router.push('/question_search/INI,CAS,EOI,SEC,H,P,Q,S')}}
             >
                 Search
             </Button>
