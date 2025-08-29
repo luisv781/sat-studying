@@ -58,19 +58,28 @@ function Search() {
             </Text>
             <View className='items-start p-4'>
                 <Text className='text-3xl text-white'>Question Domains</Text>
-                <View className='flex-row flex-wrap gap-2 mt-4'>
+                <ScrollView
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                    alwaysBounceVertical={false}
+                    directionalLockEnabled={true}
+                    className='mt-4'
+                >
                     <FlatList
                         data={QuestionDomains}
-                        horizontal={true}
+                        numColumns={Math.ceil(QuestionDomains.length / 2)}
+                        contentContainerStyle={{ alignSelf: 'flex-start' }}
+                        showsHorizontalScrollIndicator={false}
+                        showsVerticalScrollIndicator={false}
                         renderItem={({ item }: { item: QuestionDomain }) => {
                             return <Chip text={item.name} />;
                         }}
                     />
-                </View>
+                </ScrollView>
             </View>
             <View className='items-start p-4'>
                 <Text className='text-3xl text-white'>Difficulty</Text>
-                <View className='flex-row flex-wrap gap-2 mt-4'>
+                <View className='flex-row flex-wrap mt-4'>
                     <Chip text='Easy' />
                     <Chip text='Medium' />
                     <Chip text='Hard' />
