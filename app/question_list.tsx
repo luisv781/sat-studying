@@ -1,5 +1,6 @@
+import BackButton from '@/components/BackButton';
 import React from 'react';
-import { Text, View } from 'react-native';
+import { ScrollView, Text, View } from 'react-native';
 import { useTheme } from 'react-native-paper';
 
 const QuestionList = () => {
@@ -8,9 +9,11 @@ const QuestionList = () => {
     return (
         <View
             style={{ backgroundColor: theme.colors.background }}
-            className='flex-1 justify-center items-center gap-8'
+            className='flex-1 items-center gap-8'
         >
             <Text>QuestionList</Text>
+            <ScrollView></ScrollView>
+            <BackButton />
         </View>
     );
 };
