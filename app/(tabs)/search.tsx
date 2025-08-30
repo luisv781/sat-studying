@@ -48,6 +48,8 @@ function Search() {
     const router = useRouter();
     const theme = useTheme();
 
+    let chosenDomains: QuestionDomain[] = [];
+
     return (
         <ScrollView
             style={{
@@ -73,8 +75,15 @@ function Search() {
                         contentContainerStyle={{ alignSelf: 'flex-start' }}
                         showsHorizontalScrollIndicator={false}
                         showsVerticalScrollIndicator={false}
-                        renderItem={({ item }: { item: QuestionDomain }) => {
-                            return <Chip text={item.name} />;
+                        renderItem={({ item }: { item: DomainInfo }) => {
+                            return <Chip text={item.name} callback={
+                                () => {
+                                    const domainIndex = chosenDomains.indexOf(item.id);
+                                    if (domainIndex > -1)
+                                        chosenDomains.splice(domainIndex)
+                                    else chosenDomains.push(item.id)
+                                }
+                            } />;
                         }}
                     />
                 </ScrollView>
@@ -95,7 +104,13 @@ function Search() {
                     marginHorizontal: 'auto',
                     marginVertical: 16,
                 }}
-                onPress={() => {router.push('/question_search/INI,CAS,EOI,SEC,H,P,Q,S')}}
+                onPress={() => {
+                    let domainParams = '';
+                    for (const domain in chosenDomains) {
+                        domainParams += chosenDomains[domain] + ','
+                    }
+                    router.push(`/question_search/${domainParams}`)
+                }}
             >
                 Search
             </Button>

@@ -1,8 +1,8 @@
-import { View, Text } from 'react-native';
+import { View } from 'react-native';
 import React, { useState } from 'react';
 import { Chip as PaperChip } from 'react-native-paper';
 
-const Chip = ({text, callback}: {text: string, callback?: () => void}) => {
+const Chip = ({ text, callback }: { text: string; callback?: () => void }) => {
     const [selected, setSelected] = useState(false);
 
     return (
@@ -13,6 +13,7 @@ const Chip = ({text, callback}: {text: string, callback?: () => void}) => {
                 mode={selected ? 'flat' : 'outlined'}
                 onPress={() => {
                     setSelected(!selected);
+                    if (callback) callback();
                 }}
             >
                 {text}
