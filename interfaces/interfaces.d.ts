@@ -3,12 +3,12 @@ interface QuestionData {
     stem: string;
     stimulus?: string; // Only on reading questions
     rationale: string;
-    answerOptions?: answerOption[]; // Only on MCQs
+    answerOptions?: AnswerOption[]; // Only on MCQs
     keys?: string[]; // UUID of correct answer in MCQs or the answers for an FRQ
     correct_answer: string[];
 }
 
-type answerOption = {
+type AnswerOption = {
     id: string;
     content: string;
 };
@@ -25,6 +25,7 @@ type answerOption = {
  * Q - Problem-Solving and Data Analysis
  * S - Geometry and Trigonometry
  */
+type QuestionDomain = 'INI' | 'CAS' | 'EOI' | 'SEC' | 'H' | 'P' | 'Q' | 'S';
 
 interface QuestionDescription {
     external_id: string; // Long question ID

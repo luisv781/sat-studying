@@ -1,11 +1,11 @@
 import toStyledHtml, { heightSetter } from '@/utils/toStyledHtml';
+import parse from 'html-react-parser';
 import { useState } from 'react';
 import { Platform, Pressable, Text, View } from 'react-native';
 import { WebView, WebViewMessageEvent } from 'react-native-webview';
-import parse from 'html-react-parser';
 
 type AnswerChoiceData = {
-    item: answerOption;
+    item: AnswerOption;
     onPress: () => void;
     correct: boolean;
     active: boolean;

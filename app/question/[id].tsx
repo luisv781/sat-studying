@@ -153,7 +153,7 @@ const Question = () => {
                                     renderItem={({
                                         item,
                                     }: {
-                                        item: answerOption;
+                                        item: AnswerOption;
                                     }) => {
                                         return (
                                             <AnswerChoice

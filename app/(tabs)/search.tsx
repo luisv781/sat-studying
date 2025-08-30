@@ -4,12 +4,12 @@ import React from 'react';
 import { FlatList, ScrollView, Text, View } from 'react-native';
 import { Button, useTheme } from 'react-native-paper';
 
-type QuestionDomain = {
-    id: string;
+type DomainInfo = {
+    id: QuestionDomain;
     name: string;
 };
 
-const QuestionDomains: QuestionDomain[] = [
+const QuestionDomains: DomainInfo[] = [
     {
         id: 'INI',
         name: 'Information and Ideas',
