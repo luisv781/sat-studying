@@ -32,9 +32,9 @@ interface QuestionDescription {
     questionId: string; // Short question ID
     skill_desc: string; // Skill
     createDate: number; // Creation date in ms
-    primary_class_cd: string; // Question Domain
+    primary_class_cd: QuestionDomain; // Question Domain
     primary_class_cd_desc: string; // Domain Description
-    difficulty: string; // Difficulty
+    difficulty: 'E' | 'M' | 'H'; // Difficulty
     score_band_range_cd: number; // Difficulty level
 }
 

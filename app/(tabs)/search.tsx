@@ -1,6 +1,6 @@
 import Chip from '@/components/Chip';
-import { useRouter } from 'expo-router';
-import React from 'react';
+import { RelativePathString, useRouter } from 'expo-router';
+import React, { useState } from 'react';
 import { FlatList, ScrollView, Text, View } from 'react-native';
 import { Button, useTheme } from 'react-native-paper';
 
@@ -48,7 +48,10 @@ function Search() {
     const router = useRouter();
     const theme = useTheme();
 
-    let chosenDomains: QuestionDomain[] = [];
+    const [chosenDomains, setDomains] = useState<QuestionDomain[]>([]);
+    const [easy, setEasy] = useState(false);
+    const [medium, setMedium] = useState(false);
+    const [hard, setHard] = useState(false);
 
     return (
         <ScrollView
@@ -76,14 +79,21 @@ function Search() {
                         showsHorizontalScrollIndicator={false}
                         showsVerticalScrollIndicator={false}
                         renderItem={({ item }: { item: DomainInfo }) => {
-                            return <Chip text={item.name} callback={
-                                () => {
-                                    const domainIndex = chosenDomains.indexOf(item.id);
-                                    if (domainIndex > -1)
-                                        chosenDomains.splice(domainIndex)
-                                    else chosenDomains.push(item.id)
-                                }
-                            } />;
+                            return (
+                                <Chip
+                                    text={item.name}
+                                    callback={() => {
+                                        let domains = chosenDomains;
+                                        const domainIndex = domains.indexOf(
+                                            item.id
+                                        );
+                                        if (domainIndex > -1)
+                                            domains.splice(domainIndex);
+                                        else domains.push(item.id);
+                                        setDomains(domains);
+                                    }}
+                                />
+                            );
                         }}
                     />
                 </ScrollView>
@@ -91,9 +101,9 @@ function Search() {
             <View className='items-start p-4'>
                 <Text className='text-3xl text-white'>Difficulty</Text>
                 <View className='flex-row flex-wrap mt-4'>
-                    <Chip text='Easy' />
-                    <Chip text='Medium' />
-                    <Chip text='Hard' />
+                    <Chip text='Easy' ref={setEasy} />
+                    <Chip text='Medium' ref={setMedium} />
+                    <Chip text='Hard' ref={setHard} />
                 </View>
             </View>
             <Button
@@ -104,12 +114,15 @@ function Search() {
                     marginHorizontal: 'auto',
                     marginVertical: 16,
                 }}
+                disabled={!easy && !medium && !hard}
                 onPress={() => {
-                    let domainParams = '';
-                    for (const domain in chosenDomains) {
-                        domainParams += chosenDomains[domain] + ','
-                    }
-                    router.push(`/question_search/${domainParams}`)
+                    let domainParams = chosenDomains.join(',');
+                    let query =
+                        `/question_search/${domainParams || 'INI,CAS,EOI,SEC,H,P,Q,S'}?` +
+                        (easy ? 'easy=true&' : '') +
+                        (medium ? 'medium=true&' : '') +
+                        (hard ? 'hard=true' : '');
+                    router.push(query as RelativePathString);
                 }}
             >
                 Search

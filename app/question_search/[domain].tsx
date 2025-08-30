@@ -7,13 +7,13 @@ import { FlatList, Text, TouchableOpacity, View } from 'react-native';
 import { ActivityIndicator, Divider, useTheme } from 'react-native-paper';
 
 const QuestionSearch = () => {
-    const { domain } = useLocalSearchParams();
+    const { domain, ...difficulty } = useLocalSearchParams();
     const router = useRouter();
     const theme = useTheme();
 
     const {
         data: questionData,
-        loading: questionLoading,
+        loading: questionsLoading,
         error: fetchError,
     } = useFetch<QuestionList>(() => getQuestions(domain as string));
 
@@ -24,12 +24,20 @@ const QuestionSearch = () => {
         >
             {fetchError ? (
                 <Text className='text-red-500'>{fetchError.message}</Text>
-            ) : questionLoading ? (
+            ) : questionsLoading ? (
                 <ActivityIndicator size={72} style={{ margin: 32 }} />
             ) : (
                 <View className='w-full h-full'>
                     <FlatList
-                        data={questionData}
+                        data={questionData?.filter((item) => {
+                            if (difficulty.easy && item.difficulty === 'E')
+                                return true;
+                            if (difficulty.medium && item.difficulty === 'M')
+                                return true;
+                            if (difficulty.hard && item.difficulty === 'H')
+                                return true;
+                            return false;
+                        })}
                         ListHeaderComponent={() => (
                             <View>
                                 <Text className='m-8 text-5xl text-center font-bold text-white'>
@@ -54,6 +62,12 @@ const QuestionSearch = () => {
                         )}
                         ItemSeparatorComponent={() => (
                             <Divider horizontalInset />
+                        )}
+                        ListEmptyComponent={() => (
+                            <ActivityIndicator
+                                size={72}
+                                style={{ margin: 128 }}
+                            />
                         )}
                         renderItem={({
                             item,

@@ -1,8 +1,16 @@
+import React, { Dispatch, SetStateAction, useState } from 'react';
 import { View } from 'react-native';
-import React, { useState } from 'react';
 import { Chip as PaperChip } from 'react-native-paper';
 
-const Chip = ({ text, callback }: { text: string; callback?: () => void }) => {
+const Chip = ({
+    text,
+    callback,
+    ref,
+}: {
+    text: string;
+    callback?: () => void;
+    ref?: Dispatch<SetStateAction<boolean>>;
+}) => {
     const [selected, setSelected] = useState(false);
 
     return (
@@ -12,8 +20,9 @@ const Chip = ({ text, callback }: { text: string; callback?: () => void }) => {
                 showSelectedCheck={true}
                 mode={selected ? 'flat' : 'outlined'}
                 onPress={() => {
-                    setSelected(!selected);
                     if (callback) callback();
+                    if (ref) ref(!selected);
+                    setSelected(!selected);
                 }}
             >
                 {text}
